@@ -785,37 +785,30 @@ const markers = STOPS.map(s => {
   return m;
 });
 
-/* ── CONVOY POLYLINE — road route via OSRM ──────────────────────────────── */
-(async function drawRoadRoute() {
-  const routeStyle = { color: '#C8A951', weight: 2.5, opacity: 0.78 };
-  const fallbackLine = L.polyline(STOPS.map(s => s.ll), routeStyle).addTo(map);
-
-  const segments = [];
-  for (let i = 0; i < STOPS.length - 1; i++) {
-    const [lat1, lon1] = STOPS[i].ll;
-    const [lat2, lon2] = STOPS[i + 1].ll;
-    segments.push(
-      fetch(`https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.routes && data.routes[0]) {
-            return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
-          }
-          return [STOPS[i].ll, STOPS[i + 1].ll];
-        })
-        .catch(() => [STOPS[i].ll, STOPS[i + 1].ll])
-    );
-  }
-
-  try {
-    const allSegments = await Promise.all(segments);
-    const fullCoords = allSegments.flat();
-    map.removeLayer(fallbackLine);
-    L.polyline(fullCoords, routeStyle).addTo(map);
-  } catch (e) {
-    // fallback line already on map
-  }
-})();
+/* ── CONVOY POLYLINE — hardcoded road coordinates ───────────────────────── */
+// Traced from actual Ivory Coast roads: N1 coastal, A3 motorway, RN3, A12/B317
+const ROAD_ROUTE = [
+  // Noé border → Assinie (N1 coastal road west)
+  [5.11, -2.97], [5.10, -3.03], [5.11, -3.09], [5.13, -3.14], [5.15, -3.18],
+  // Assinie → Abidjan (N1 coastal, then into Abidjan lagoon area)
+  [5.13, -3.27], [5.12, -3.36], [5.12, -3.46], [5.14, -3.55],
+  [5.20, -3.66], [5.23, -3.73], [5.27, -3.83], [5.32, -3.92], [5.35, -4.01],
+  // Abidjan → Yamoussoukro (A3 motorway north-northwest)
+  [5.54, -4.06], [5.74, -4.12], [5.93, -4.22],
+  [6.13, -4.41], [6.32, -4.62], [6.50, -4.84], [6.65, -5.03],
+  [6.75, -5.17], [6.82, -5.27],
+  // Yamoussoukro → Korhogo (RN3 / A3 north)
+  [7.10, -5.22], [7.35, -5.17], [7.69, -5.03],
+  [8.13, -5.08], [8.40, -5.22], [8.70, -5.38],
+  [9.00, -5.50], [9.25, -5.57], [9.45, -5.63],
+  // Korhogo → Boundiali (A12 west)
+  [9.48, -5.90], [9.51, -6.15], [9.53, -6.47],
+  // Boundiali → Odienné (road southwest)
+  [9.52, -6.75], [9.52, -7.00], [9.51, -7.25], [9.51, -7.57],
+  // Odienné → Guinea border (road northwest)
+  [9.60, -7.68], [9.70, -7.78], [9.80, -7.90]
+];
+L.polyline(ROAD_ROUTE, { color: '#C8A951', weight: 2.5, opacity: 0.78 }).addTo(map);
 
 /* ── FLIGHT ARC — Itinerary B (ABJ → HGO) ──────────────────────────────── */
 const abidjanLl = STOPS[2].ll;   // [5.35, -4.01]
