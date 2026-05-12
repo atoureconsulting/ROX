@@ -694,47 +694,49 @@ const DAYS = [
 ];
 
 /* ── MEDIA ──────────────────────────────────────────────────────────────── */
-// Paths with spaces/parens are percent-encoded for safe use in src attributes
+// Absolute raw GitHub URLs — file works anywhere without needing local Media folder
+
+const RAW = 'https://raw.githubusercontent.com/atoureconsulting/ROX/claude/rox-motor-route-map-PobVw/Media/';
 
 const MEDIA = [
   /* Day 1 — Assinie */
   [
-    { src: 'Media/Assinie/1.jpg',                                                                    type: 'image' },
-    { src: 'Media/Assinie/613699238_17877493065466700_8408318827086361228_n.jpg',                    type: 'image' },
-    { src: 'Media/Assinie/562714533_17866835019466700_558023628690047523_n.jpg',                     type: 'image' },
-    { src: 'Media/Assinie/601521708_17874056925466700_114840238184610981_n.jpg',                     type: 'image' },
-    { src: 'Media/Assinie/599605069_17873611251466700_737723455862209908_n.jpg',                     type: 'image' },
-    { src: 'Media/Assinie/LEscapade-Hotel-1-BAAB.jpeg',                                             type: 'image' },
-    { src: 'Media/Assinie/WhatsApp%20Video%202026-05-12%20at%202.46.40%20PM.mp4',                   type: 'video' }
+    { src: RAW + 'Assinie/1.jpg',                                                                         type: 'image' },
+    { src: RAW + 'Assinie/613699238_17877493065466700_8408318827086361228_n.jpg',                         type: 'image' },
+    { src: RAW + 'Assinie/562714533_17866835019466700_558023628690047523_n.jpg',                          type: 'image' },
+    { src: RAW + 'Assinie/601521708_17874056925466700_114840238184610981_n.jpg',                          type: 'image' },
+    { src: RAW + 'Assinie/599605069_17873611251466700_737723455862209908_n.jpg',                          type: 'image' },
+    { src: RAW + 'Assinie/LEscapade-Hotel-1-BAAB.jpeg',                                                  type: 'image' },
+    { src: RAW + 'Assinie/WhatsApp%20Video%202026-05-12%20at%202.46.40%20PM.mp4',                        type: 'video' }
   ],
   /* Day 2 — Abidjan (arrival) */
   [
-    { src: 'Media/Abidjan/caption.jpg',                                                              type: 'image' },
-    { src: 'Media/Abidjan/caption%20(1).jpg',                                                        type: 'image' },
-    { src: 'Media/Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',               type: 'image' },
-    { src: 'Media/Abidjan/sofitel-abidjan-hotel.jpg',                                                type: 'image' },
-    { src: 'Media/Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',               type: 'image' },
-    { src: 'Media/Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                        type: 'image' }
+    { src: RAW + 'Abidjan/caption.jpg',                                                                   type: 'image' },
+    { src: RAW + 'Abidjan/caption%20(1).jpg',                                                             type: 'image' },
+    { src: RAW + 'Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',                    type: 'image' },
+    { src: RAW + 'Abidjan/sofitel-abidjan-hotel.jpg',                                                     type: 'image' },
+    { src: RAW + 'Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',                    type: 'image' },
+    { src: RAW + 'Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                             type: 'image' }
   ],
   /* Day 3 — Abidjan (city day — same location) */
   [
-    { src: 'Media/Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',               type: 'image' },
-    { src: 'Media/Abidjan/caption.jpg',                                                              type: 'image' },
-    { src: 'Media/Abidjan/caption%20(1).jpg',                                                        type: 'image' },
-    { src: 'Media/Abidjan/sofitel-abidjan-hotel.jpg',                                                type: 'image' },
-    { src: 'Media/Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',               type: 'image' },
-    { src: 'Media/Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                        type: 'image' }
+    { src: RAW + 'Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',                    type: 'image' },
+    { src: RAW + 'Abidjan/caption.jpg',                                                                   type: 'image' },
+    { src: RAW + 'Abidjan/caption%20(1).jpg',                                                             type: 'image' },
+    { src: RAW + 'Abidjan/sofitel-abidjan-hotel.jpg',                                                     type: 'image' },
+    { src: RAW + 'Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',                    type: 'image' },
+    { src: RAW + 'Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                             type: 'image' }
   ],
   /* Day 4 — Yamoussoukro */
   [
-    { src: 'Media/Yakro/basilique-Notre-Dame-de-la-Paix-de-Yamoussoukro-2.jpg',                      type: 'image' },
-    { src: 'Media/Abidjan/r787i21nw2hb00sbfkf0qx4ewdz0.webp',                                       type: 'image' },
-    { src: 'Media/Abidjan/Hotel-President-Yamoussoukro-scaled.jpeg',                                 type: 'image' }
+    { src: RAW + 'Yakro/basilique-Notre-Dame-de-la-Paix-de-Yamoussoukro-2.jpg',                           type: 'image' },
+    { src: RAW + 'Abidjan/r787i21nw2hb00sbfkf0qx4ewdz0.webp',                                            type: 'image' },
+    { src: RAW + 'Abidjan/Hotel-President-Yamoussoukro-scaled.jpeg',                                      type: 'image' }
   ],
   /* Day 5 — Korhogo */
   [
-    { src: 'Media/Korhogo/slide-accueil_3.webp',                                                     type: 'image' },
-    { src: 'Media/Korhogo/Le_Mont_Korhogo_01.jpg.webp',                                              type: 'image' }
+    { src: RAW + 'Korhogo/slide-accueil_3.webp',                                                          type: 'image' },
+    { src: RAW + 'Korhogo/Le_Mont_Korhogo_01.jpg.webp',                                                   type: 'image' }
   ],
   /* Day 6 — Odienné / Guinea border (no media) */
   []
