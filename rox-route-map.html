@@ -331,6 +331,145 @@
     }
     .note-txt { font-size: 0.77rem; color: var(--light); line-height: 1.55; font-style: italic; }
 
+    /* ── MEDIA GALLERY ───────────────────────────────────────────────── */
+    .media-section {
+      margin-top: 10px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(200,169,81,0.1);
+    }
+
+    .media-section-lbl {
+      font-size: 0.57rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-family: system-ui, sans-serif;
+      margin-bottom: 8px;
+    }
+
+    .media-strip {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 3px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--mid) transparent;
+    }
+    .media-strip::-webkit-scrollbar { height: 3px; }
+    .media-strip::-webkit-scrollbar-thumb { background: var(--mid); border-radius: 2px; }
+
+    .media-thumb {
+      flex: 0 0 auto;
+      width: 134px;
+      height: 84px;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(200,169,81,0.15);
+      transition: border-color 0.18s, transform 0.18s;
+      position: relative;
+      background: var(--surface);
+    }
+    .media-thumb:hover {
+      border-color: var(--gold);
+      transform: translateY(-1px);
+    }
+    .media-thumb img,
+    .media-thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .play-badge {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.38);
+      font-size: 22px;
+      color: rgba(255,255,255,0.9);
+      pointer-events: none;
+    }
+
+    /* ── LIGHTBOX ─────────────────────────────────────────────────────── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.93);
+      z-index: 9000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+
+    .lb-top {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+      z-index: 9001;
+    }
+    .lb-counter {
+      font-size: 0.72rem;
+      color: var(--light);
+      font-family: system-ui, sans-serif;
+      letter-spacing: 0.1em;
+    }
+    .lb-close {
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: color 0.15s;
+      line-height: 1;
+    }
+    .lb-close:hover { color: var(--gold); }
+
+    .lb-stage {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 96vw;
+      max-height: 88vh;
+    }
+
+    .lb-arrow {
+      background: none;
+      border: 1px solid rgba(200,169,81,0.3);
+      color: var(--gold);
+      font-size: 32px;
+      line-height: 1;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lb-arrow:hover { background: rgba(200,169,81,0.12); border-color: var(--gold); }
+    .lb-arrow:disabled { opacity: 0.2; cursor: default; }
+
+    #lb-content img,
+    #lb-content video {
+      max-width: min(82vw, 1100px);
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 3px;
+      display: block;
+    }
+
     /* ── RESPONSIVE ──────────────────────────────────────────────────── */
     @media (max-width: 620px) {
       .header { flex-direction: column; align-items: flex-start; }
@@ -338,6 +477,8 @@
       .detail-grid { grid-template-columns: 1fr; }
       .d-cell.span2 { grid-column: 1; }
       .cards-section, .detail-panel, .header { padding-left: 14px; padding-right: 14px; }
+      .media-thumb { width: 110px; height: 70px; }
+      .lb-arrow { display: none; }
     }
   </style>
 </head>
@@ -369,6 +510,19 @@
 
 <!-- ── DETAIL ──────────────────────────────────────────────────────────── -->
 <div class="detail-panel" id="detail-panel"></div>
+
+<!-- ── LIGHTBOX ────────────────────────────────────────────────────────── -->
+<div id="lightbox" class="lightbox">
+  <div class="lb-top">
+    <span id="lb-counter" class="lb-counter"></span>
+    <button class="lb-close" id="lb-close">✕</button>
+  </div>
+  <div class="lb-stage">
+    <button class="lb-arrow" id="lb-prev">&#8249;</button>
+    <div id="lb-content"></div>
+    <button class="lb-arrow" id="lb-next">&#8250;</button>
+  </div>
+</div>
 
 <script>
 /* ── DATA ──────────────────────────────────────────────────────────────── */
@@ -539,6 +693,53 @@ const DAYS = [
   }
 ];
 
+/* ── MEDIA ──────────────────────────────────────────────────────────────── */
+// Paths with spaces/parens are percent-encoded for safe use in src attributes
+
+const MEDIA = [
+  /* Day 1 — Assinie */
+  [
+    { src: 'Media/Assinie/1.jpg',                                                                    type: 'image' },
+    { src: 'Media/Assinie/613699238_17877493065466700_8408318827086361228_n.jpg',                    type: 'image' },
+    { src: 'Media/Assinie/562714533_17866835019466700_558023628690047523_n.jpg',                     type: 'image' },
+    { src: 'Media/Assinie/601521708_17874056925466700_114840238184610981_n.jpg',                     type: 'image' },
+    { src: 'Media/Assinie/599605069_17873611251466700_737723455862209908_n.jpg',                     type: 'image' },
+    { src: 'Media/Assinie/LEscapade-Hotel-1-BAAB.jpeg',                                             type: 'image' },
+    { src: 'Media/Assinie/WhatsApp%20Video%202026-05-12%20at%202.46.40%20PM.mp4',                   type: 'video' }
+  ],
+  /* Day 2 — Abidjan (arrival) */
+  [
+    { src: 'Media/Abidjan/caption.jpg',                                                              type: 'image' },
+    { src: 'Media/Abidjan/caption%20(1).jpg',                                                        type: 'image' },
+    { src: 'Media/Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',               type: 'image' },
+    { src: 'Media/Abidjan/sofitel-abidjan-hotel.jpg',                                                type: 'image' },
+    { src: 'Media/Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',               type: 'image' },
+    { src: 'Media/Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                        type: 'image' }
+  ],
+  /* Day 3 — Abidjan (city day — same location) */
+  [
+    { src: 'Media/Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',               type: 'image' },
+    { src: 'Media/Abidjan/caption.jpg',                                                              type: 'image' },
+    { src: 'Media/Abidjan/caption%20(1).jpg',                                                        type: 'image' },
+    { src: 'Media/Abidjan/sofitel-abidjan-hotel.jpg',                                                type: 'image' },
+    { src: 'Media/Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',               type: 'image' },
+    { src: 'Media/Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                        type: 'image' }
+  ],
+  /* Day 4 — Yamoussoukro */
+  [
+    { src: 'Media/Yakro/basilique-Notre-Dame-de-la-Paix-de-Yamoussoukro-2.jpg',                      type: 'image' },
+    { src: 'Media/Abidjan/r787i21nw2hb00sbfkf0qx4ewdz0.webp',                                       type: 'image' },
+    { src: 'Media/Abidjan/Hotel-President-Yamoussoukro-scaled.jpeg',                                 type: 'image' }
+  ],
+  /* Day 5 — Korhogo */
+  [
+    { src: 'Media/Korhogo/slide-accueil_3.webp',                                                     type: 'image' },
+    { src: 'Media/Korhogo/Le_Mont_Korhogo_01.jpg.webp',                                              type: 'image' }
+  ],
+  /* Day 6 — Odienné / Guinea border (no media) */
+  []
+];
+
 /* ── STATE ──────────────────────────────────────────────────────────────── */
 let itinerary = 'A';
 let activeDay  = 0;
@@ -679,6 +880,7 @@ function renderDetail() {
         </div>
       </div>
     </div>
+    ${buildMediaStrip(activeDay)}
     <div class="note-block">
       <div class="note-lbl">Priority Note</div>
       <div class="note-txt">${d.note}</div>
@@ -721,6 +923,99 @@ function setItinerary(mode) {
 
   renderDetail();
 }
+
+/* ── MEDIA GALLERY ──────────────────────────────────────────────────────── */
+
+function buildMediaStrip(dayIdx) {
+  const items = MEDIA[dayIdx];
+  if (!items || items.length === 0) return '';
+
+  const thumbs = items.map((item, i) => {
+    if (item.type === 'video') {
+      return `<div class="media-thumb" onclick="openLb(${dayIdx},${i})" title="Play video">
+        <video src="${item.src}" muted preload="metadata"></video>
+        <div class="play-badge">&#9654;</div>
+      </div>`;
+    }
+    return `<div class="media-thumb" onclick="openLb(${dayIdx},${i})">
+      <img src="${item.src}" loading="lazy" alt="" />
+    </div>`;
+  }).join('');
+
+  return `<div class="media-section">
+    <div class="media-section-lbl">Visual Reference — ${DAYS[dayIdx].label}</div>
+    <div class="media-strip">${thumbs}</div>
+  </div>`;
+}
+
+/* ── LIGHTBOX ────────────────────────────────────────────────────────────── */
+
+let lbItems = [];
+let lbIdx   = 0;
+
+function openLb(dayIdx, startIdx) {
+  lbItems = MEDIA[dayIdx];
+  lbIdx   = startIdx;
+  showLbItem();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLb() {
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+  const vid = document.querySelector('#lb-content video');
+  if (vid) vid.pause();
+}
+
+function showLbItem() {
+  const item    = lbItems[lbIdx];
+  const content = document.getElementById('lb-content');
+  const prev    = document.getElementById('lb-prev');
+  const next    = document.getElementById('lb-next');
+  const counter = document.getElementById('lb-counter');
+
+  const vid = content.querySelector('video');
+  if (vid) vid.pause();
+
+  if (item.type === 'video') {
+    content.innerHTML = `<video src="${item.src}" controls autoplay playsinline></video>`;
+  } else {
+    content.innerHTML = `<img src="${item.src}" alt="" />`;
+  }
+
+  const multi = lbItems.length > 1;
+  prev.style.visibility = multi ? 'visible' : 'hidden';
+  next.style.visibility = multi ? 'visible' : 'hidden';
+  counter.textContent   = multi ? `${lbIdx + 1} / ${lbItems.length}` : '';
+}
+
+function prevLb(e) {
+  e && e.stopPropagation();
+  lbIdx = (lbIdx - 1 + lbItems.length) % lbItems.length;
+  showLbItem();
+}
+
+function nextLb(e) {
+  e && e.stopPropagation();
+  lbIdx = (lbIdx + 1) % lbItems.length;
+  showLbItem();
+}
+
+// Wire up lightbox controls once DOM is ready
+document.getElementById('lb-close').addEventListener('click', closeLb);
+document.getElementById('lb-prev').addEventListener('click', e => prevLb(e));
+document.getElementById('lb-next').addEventListener('click', e => nextLb(e));
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLb();
+});
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowLeft')  prevLb(null);
+  if (e.key === 'ArrowRight') nextLb(null);
+});
 
 /* ── INIT ───────────────────────────────────────────────────────────────── */
 markers[DAYS[0].focusStop].setIcon(makeStopIcon(true));
