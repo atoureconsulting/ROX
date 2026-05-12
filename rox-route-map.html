@@ -785,28 +785,46 @@ const markers = STOPS.map(s => {
   return m;
 });
 
-/* ── CONVOY POLYLINE — hardcoded road coordinates ───────────────────────── */
-// Traced from actual Ivory Coast roads: N1 coastal, A3 motorway, RN3, A12/B317
+/* ── CONVOY POLYLINE — road coordinates from Google Maps directions ─────── */
+// B102 → A100 → Rte Assinie → A.du Nord/A3 → B309/B308 → A12
 const ROAD_ROUTE = [
-  // Noé border → Assinie (N1 coastal road west)
-  [5.11, -2.97], [5.10, -3.03], [5.11, -3.09], [5.13, -3.14], [5.15, -3.18],
-  // Assinie → Abidjan (N1 coastal, then into Abidjan lagoon area)
-  [5.13, -3.27], [5.12, -3.36], [5.12, -3.46], [5.14, -3.55],
-  [5.20, -3.66], [5.23, -3.73], [5.27, -3.83], [5.32, -3.92], [5.35, -4.01],
-  // Abidjan → Yamoussoukro (A3 motorway north-northwest)
-  [5.54, -4.06], [5.74, -4.12], [5.93, -4.22],
-  [6.13, -4.41], [6.32, -4.62], [6.50, -4.84], [6.65, -5.03],
-  [6.75, -5.17], [6.82, -5.27],
-  // Yamoussoukro → Korhogo (RN3 / A3 north)
-  [7.10, -5.22], [7.35, -5.17], [7.69, -5.03],
-  [8.13, -5.08], [8.40, -5.22], [8.70, -5.38],
-  [9.00, -5.50], [9.25, -5.57], [9.45, -5.63],
-  // Korhogo → Boundiali (A12 west)
-  [9.48, -5.90], [9.51, -6.15], [9.53, -6.47],
-  // Boundiali → Odienné (road southwest)
-  [9.52, -6.75], [9.52, -7.00], [9.51, -7.25], [9.51, -7.57],
-  // Odienné → Guinea border (road northwest)
-  [9.60, -7.68], [9.70, -7.78], [9.80, -7.90]
+  // Noé → Assinie: B102 west 59km, A100 45km, B107 south to Assinie peninsula
+  [5.11, -2.97],
+  [5.18, -3.04], [5.32, -3.12], [5.44, -3.19],  // B102 through Aboisso area
+  [5.40, -3.25], [5.30, -3.28], [5.22, -3.28],  // A100 southwest then B107 south
+  [5.15, -3.18],  // Assinie / L'Escapade
+
+  // Assinie → Abidjan: back to A100, northwest via Grand-Bassam motorway
+  [5.21, -3.34], [5.21, -3.46], [5.20, -3.58],
+  [5.20, -3.68],  // Grand-Bassam
+  [5.22, -3.78],  // A. Abidjan–Grand Bassam
+  [5.26, -3.86], [5.29, -3.92], [5.33, -3.97],
+  [5.34, -4.00],  // Pont Henri Konan Bédié bridge
+  [5.35, -3.99],  // Sofitel / Hotel Ivoire — Abidjan
+
+  // Abidjan → Yamoussoukro: A.du Nord toll motorway (230km northwest)
+  [5.41, -4.02], [5.58, -4.06], [5.79, -4.13],
+  [6.05, -4.35], [6.28, -4.57], [6.48, -4.78],
+  [6.63, -5.00], [6.74, -5.15],
+  [6.82, -5.27],  // Hôtel Président — Yamoussoukro
+
+  // Yamoussoukro → Korhogo: A.du Nord / A3 north (234km), then B309/B308 west
+  [7.10, -5.22], [7.35, -5.15],
+  [7.69, -5.03],  // Bouaké
+  [8.00, -5.05], [8.13, -5.08],  // Katiola
+  [8.45, -5.15], [8.72, -5.26],  // A3 → B309 junction
+  [8.93, -5.40], [9.18, -5.53],
+  [9.45, -5.63],  // Korhogo
+
+  // Korhogo → Odienné: A12 west 232km through Boundiali
+  [9.46, -5.84], [9.50, -6.10],
+  [9.53, -6.47],  // Boundiali
+  [9.52, -6.75], [9.52, -7.00], [9.51, -7.25],
+  [9.51, -7.57],  // Odienné
+
+  // Odienné → Guinea border: Noumoudjigila corridor northwest
+  [9.60, -7.68], [9.70, -7.78],
+  [9.80, -7.90]   // Guinea border
 ];
 L.polyline(ROAD_ROUTE, { color: '#C8A951', weight: 2.5, opacity: 0.78 }).addTo(map);
 
