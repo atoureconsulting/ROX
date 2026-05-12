@@ -785,10 +785,37 @@ const markers = STOPS.map(s => {
   return m;
 });
 
-/* ── CONVOY POLYLINE ────────────────────────────────────────────────────── */
-L.polyline(STOPS.map(s => s.ll), {
-  color: '#C8A951', weight: 2.5, opacity: 0.78
-}).addTo(map);
+/* ── CONVOY POLYLINE — road route via OSRM ──────────────────────────────── */
+(async function drawRoadRoute() {
+  const routeStyle = { color: '#C8A951', weight: 2.5, opacity: 0.78 };
+  const fallbackLine = L.polyline(STOPS.map(s => s.ll), routeStyle).addTo(map);
+
+  const segments = [];
+  for (let i = 0; i < STOPS.length - 1; i++) {
+    const [lat1, lon1] = STOPS[i].ll;
+    const [lat2, lon2] = STOPS[i + 1].ll;
+    segments.push(
+      fetch(`https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.routes && data.routes[0]) {
+            return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+          }
+          return [STOPS[i].ll, STOPS[i + 1].ll];
+        })
+        .catch(() => [STOPS[i].ll, STOPS[i + 1].ll])
+    );
+  }
+
+  try {
+    const allSegments = await Promise.all(segments);
+    const fullCoords = allSegments.flat();
+    map.removeLayer(fallbackLine);
+    L.polyline(fullCoords, routeStyle).addTo(map);
+  } catch (e) {
+    // fallback line already on map
+  }
+})();
 
 /* ── FLIGHT ARC — Itinerary B (ABJ → HGO) ──────────────────────────────── */
 const abidjanLl = STOPS[2].ll;   // [5.35, -4.01]
