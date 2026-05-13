@@ -318,6 +318,22 @@
       font-weight: bold;
     }
 
+    /* vision bar */
+    .vision-block {
+      border-left: 3px solid var(--coral);
+      background: rgba(196,96,74,0.06);
+      padding: 12px 16px;
+      border-radius: 0 3px 3px 0;
+      margin-bottom: 14px;
+    }
+    .vision-lbl {
+      font-size: 0.57rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--coral); font-family: system-ui, sans-serif; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .vision-lbl::before { content: '◈'; font-size: 0.65rem; }
+    .vision-txt { font-size: 0.8rem; color: var(--cream); line-height: 1.65; }
+
     /* note bar */
     .note-block {
       border-left: 3px solid var(--gold);
@@ -355,19 +371,24 @@
 
     .media-hero-main {
       width: 100%;
-      height: 300px;
+      height: 420px;
       border-radius: 4px;
       overflow: hidden;
       cursor: zoom-in;
       position: relative;
-      background: var(--surface);
+      background: #111;
       margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .media-hero-main img,
     .media-hero-main video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
       display: block;
       transition: opacity 0.22s;
     }
@@ -425,7 +446,7 @@
     }
 
     @media (max-width: 620px) {
-      .media-hero-main { height: 200px; }
+      .media-hero-main { height: 260px; }
     }
 
     /* ── LIGHTBOX ─────────────────────────────────────────────────────── */
@@ -622,7 +643,8 @@ const DAYS = [
       'Delegation flight split TBC with Fabrice — confirm before pre-production begins',
       'Vehicle carnets, crew passports, equipment docs must be pre-cleared'
     ],
-    note: "Pier shot is the candidate opening image. Confirm L'Escapade pier load capacity for vehicle weight before shoot day. Mobile detailer required on arrival."
+    note: "Pier shot is the candidate opening image. Confirm L'Escapade pier load capacity for vehicle weight before shoot day. Mobile detailer required on arrival.",
+    vision: "L'Escapade Hotel is the ideal canvas — its lagoon-side architecture and intimate atmosphere match the ROX aesthetic perfectly. The delegation gathers on the terrace at golden hour: cocktails, the water behind them, the light low. Drone ascends slowly to reveal the full hotel grounds and the Atlantic peninsula beyond. Hero shot: the ROX vehicle positioned at the far edge of the pontoon, engine off, overlooking the lagoon — drone pulls back at low altitude with water on both sides and the open ocean visible in the distance. This is the candidate opening frame of the entire campaign."
   },
   {
     label: 'Day 2',
@@ -642,7 +664,8 @@ const DAYS = [
       'Day 3 event venue is the most urgent booking on arrival in Abidjan',
       'Secure covered overnight parking for ROX vehicles — not on street'
     ],
-    note: 'Full detail on both ROX vehicles on arrival. Charge both vehicles fully — must be at 100% before Day 4 departure.'
+    note: 'Full detail on both ROX vehicles on arrival. Charge both vehicles fully — must be at 100% before Day 4 departure.',
+    vision: "The coastal arrival into Abidjan sets the tone for the city chapter. Vehicles moving at speed along the Atlantic-facing road — open water to one side, palm-lined tarmac, the city skyline beginning to emerge. Drone tracking low alongside the convoy as it enters the economic capital. The transition from raw coastline to urban infrastructure in a single unbroken sequence."
   },
   {
     label: 'Day 3',
@@ -663,7 +686,8 @@ const DAYS = [
       'Highest-visibility day of the campaign — all logistics must be airtight',
       'Confirm whether ROX / AB Studios provide their own media team'
     ],
-    note: 'Both ROX vehicles fully detailed before the event. Both vehicles fully charged before Day 4 early departure.'
+    note: 'Both ROX vehicles fully detailed before the event. Both vehicles fully charged before Day 4 early departure.',
+    vision: "Pont Alassane Ouattara — Abidjan's most commanding span, crossing the lagoon between Cocody and the Plateau. The ROX vehicle stationary on the bridge at dawn, city still quiet, light coming in low across the water. Drone circles wide to capture the vehicle against the full arc of the lagoon, with the Abidjan skyline rising behind. A short privatisation window — 30 to 60 minutes, early morning — is the working approach to clear the bridge for filming. No other location in Abidjan delivers this scale."
   },
   {
     label: 'Day 4',
@@ -684,7 +708,8 @@ const DAYS = [
       'Hôtel Président: limited alternatives in Yamoussoukro — book early',
       'Delegation flight ABJ→ASK TBC with Fabrice'
     ],
-    note: 'Contact with Fondation Félix Houphouët-Boigny is the single highest-priority pre-production task for the campaign. No confirmation = no hero shot.'
+    note: 'Contact with Fondation Félix Houphouët-Boigny is the single highest-priority pre-production task for the campaign. No confirmation = no hero shot.',
+    vision: "The 8-lane approach road to the Basilique Notre-Dame de la Paix is the defining image of the campaign. Two ROX vehicles on the wide, empty carriageway — the Basilica dome filling the horizon ahead. Drone pulls back slowly along the road axis, revealing the full geometry: arrow-straight tarmac, symmetrical colonnades on both sides, the vehicle small against the immensity of the building. The road does the work. Nothing needs to be added. This is the shot the entire Ivory Coast leg is built around."
   },
   {
     label: 'Day 5',
@@ -705,7 +730,8 @@ const DAYS = [
       'Last confirmed charging point before the Guinea border — full charge is non-negotiable',
       'Delegation flight ABJ→HGO TBC with Fabrice'
     ],
-    note: 'Last confirmed charging point before the Guinea border. Both vehicles must leave Korhogo at full charge on Day 6.'
+    note: 'Last confirmed charging point before the Guinea border. Both vehicles must leave Korhogo at full charge on Day 6.',
+    vision: "Mont Korhogo rises dramatically from the savanna — a rocky inselberg that marks the northern landscape in a way nothing else does. The ROX vehicle on the approach track, the summit visible above, wild grass and acacia on either side. Drone works the elevation: the vehicle's clean, engineered lines set against ancient, unworked rock. The shift from the urban south to this raw, open north is the tonal pivot of the entire route — and this is where the camera captures it."
   },
   {
     label: 'Day 6',
@@ -726,7 +752,8 @@ const DAYS = [
       'Border crossing time unpredictable — allow full 2–3h buffer',
       'Most remote point of the route — emergency medical protocols essential'
     ],
-    note: 'Atoure scope ends at the border. Full handoff to Guinea partner: convoy condition report, equipment manifest, crew manifest, medical notes, all contact connections.'
+    note: 'Atoure scope ends at the border. Full handoff to Guinea partner: convoy condition report, equipment manifest, crew manifest, medical notes, all contact connections.',
+    vision: "The final frames of the Ivory Coast chapter. A laterite road disappearing into the savanna — red earth, sparse trees, vast sky. The ROX vehicle moving away from the camera, shrinking toward the horizon. No buildings, no infrastructure, just the road and the north. The convoy crosses into Guinea and the screen cuts. Atoure's work in Ivory Coast is done."
   }
 ];
 
@@ -746,7 +773,8 @@ const DAYS_FR = [
       'Scission des vols délégation À CONFIRMER avec Fabrice',
       'Carnets de véhicules, passeports équipe, documents équipement à pré-autoriser'
     ],
-    note: "Le plan de la jetée est l'image d'ouverture candidate. Confirmer la capacité portante de la jetée de L'Escapade avant le jour du tournage. Détailing mobile requis à l'arrivée."
+    note: "Le plan de la jetée est l'image d'ouverture candidate. Confirmer la capacité portante de la jetée de L'Escapade avant le jour du tournage. Détailing mobile requis à l'arrivée.",
+    vision: "L'hôtel L'Escapade est le cadre idéal — son architecture en bord de lagune et son atmosphère intime correspondent parfaitement à l'esthétique ROX. La délégation se réunit en terrasse à l'heure dorée : cocktails, l'eau derrière eux, la lumière rasante. Le drone s'élève lentement pour révéler le domaine et la péninsule atlantique au-delà. Plan emblématique : le véhicule ROX positionné à l'extrémité du ponton, surplombant la lagune — drone en recul à basse altitude, eau des deux côtés, océan ouvert à l'horizon. C'est l'image d'ouverture candidate de toute la campagne."
   },
   {
     label: 'Jour 2', route: 'Assinie → Abidjan', distance: '~100 km · 1h30',
@@ -761,7 +789,8 @@ const DAYS_FR = [
       'Le lieu de l\'événement Jour 3 est la réservation la plus urgente à l\'arrivée à Abidjan',
       'Stationnement couvert sécurisé pour les véhicules ROX — pas en voirie'
     ],
-    note: 'Détailing complet des deux véhicules ROX à l\'arrivée. Les deux véhicules à 100% avant le départ du Jour 4.'
+    note: 'Détailing complet des deux véhicules ROX à l\'arrivée. Les deux véhicules à 100% avant le départ du Jour 4.',
+    vision: "L'arrivée côtière à Abidjan pose le ton du chapitre urbain. Les véhicules en mouvement sur la route face à l'Atlantique — l'eau ouverte d'un côté, le bitume bordé de palmiers, le skyline de la ville qui commence à émerger. Drone en suivi à basse altitude longeant le convoi à son entrée dans la capitale économique. La transition de la côte sauvage vers l'infrastructure urbaine en une seule séquence continue."
   },
   {
     label: 'Jour 3', route: 'Abidjan — Activations', distance: 'Déplacements urbains uniquement',
@@ -777,7 +806,8 @@ const DAYS_FR = [
       'Journée à plus haute visibilité — toute la logistique doit être irréprochable',
       'Confirmer si ROX / AB Studios fournissent leur propre équipe médias'
     ],
-    note: 'Les deux véhicules entièrement détaillés avant l\'événement. Les deux véhicules chargés avant le départ matinal du Jour 4.'
+    note: 'Les deux véhicules entièrement détaillés avant l\'événement. Les deux véhicules chargés avant le départ matinal du Jour 4.',
+    vision: "Le Pont Alassane Ouattara — la traversée la plus majestueuse d'Abidjan, enjambant la lagune entre Cocody et le Plateau. Le véhicule ROX immobile sur le pont à l'aube, la ville encore silencieuse, la lumière rasante sur l'eau. Drone en orbite large capturant le véhicule sur toute l'étendue de la lagune, le skyline d'Abidjan en arrière-plan. Une fenêtre de privatisation courte — 30 à 60 minutes, tôt le matin — est l'approche de travail pour dégager le pont. Aucun autre site à Abidjan n'offre cette échelle."
   },
   {
     label: 'Jour 4', route: 'Abidjan → Yamoussoukro', distance: '~240 km · 2h30',
@@ -793,7 +823,8 @@ const DAYS_FR = [
       'Hôtel Président : réservation anticipée indispensable — options limitées à Yamoussoukro',
       'Vol délégation ABJ→ASK À CONFIRMER avec Fabrice'
     ],
-    note: 'Contacter la Fondation Félix Houphouët-Boigny est la tâche de pré-production la plus prioritaire. Aucune confirmation = aucun plan emblématique.'
+    note: 'Contacter la Fondation Félix Houphouët-Boigny est la tâche de pré-production la plus prioritaire. Aucune confirmation = aucun plan emblématique.',
+    vision: "La voie d'approche à 8 voies de la Basilique Notre-Dame de la Paix est l'image centrale de la campagne. Deux véhicules ROX sur la large chaussée vide — le dôme de la Basilique remplissant l'horizon. Le drone recule lentement le long de l'axe de la route, révélant la géométrie complète : bitume rectiligne, colonnades symétriques des deux côtés, le véhicule humble face à l'immensité de l'édifice. La route fait tout le travail. C'est le plan autour duquel tout le chapitre ivoirien est construit."
   },
   {
     label: 'Jour 5', route: 'Yamoussoukro → Korhogo', distance: '~340 km · 4h',
@@ -809,7 +840,8 @@ const DAYS_FR = [
       'Vérifier l\'état actuel de la borne directement auprès d\'EV.Tech',
       'Vol délégation ABJ→HGO À CONFIRMER avec Fabrice'
     ],
-    note: 'La RN3 est goudronnée — vérifier l\'état de la route à l\'approche de la date. Confirmer l\'hôtel tôt : options limitées à Korhogo.'
+    note: 'La RN3 est goudronnée — vérifier l\'état de la route à l\'approche de la date. Confirmer l\'hôtel tôt : options limitées à Korhogo.',
+    vision: "Le Mont Korhogo s'élève brusquement de la savane — un inselberg rocheux qui marque le paysage du nord comme rien d'autre. Le véhicule ROX sur la piste d'approche, le sommet visible au-dessus, herbe sauvage et acacias de chaque côté. Le drone joue avec l'altitude : les lignes épurées et maîtrisées du véhicule face à la roche ancienne et organique. Le passage de l'urbain du sud vers ce nord brut et ouvert est le pivot tonal de tout l'itinéraire — et c'est ici que la caméra le capte."
   },
   {
     label: 'Jour 6', route: 'Korhogo → Odienné → Frontière Guinée', distance: '~250 km · 3h + formalités',
@@ -825,7 +857,8 @@ const DAYS_FR = [
       'Aucune charge après Korhogo — partir avec charge complète',
       'Documents d\'entrée en Guinée à confirmer des semaines à l\'avance'
     ],
-    note: 'Le périmètre Atoure se termine à la frontière. Passation complète au partenaire guinéen : rapport d\'état du convoi, manifeste d\'équipement, manifeste d\'équipe, notes médicales.'
+    note: 'Le périmètre Atoure se termine à la frontière. Passation complète au partenaire guinéen : rapport d\'état du convoi, manifeste d\'équipement, manifeste d\'équipe, notes médicales.',
+    vision: "Les derniers plans du chapitre ivoirien. Une route en latérite qui disparaît dans la savane — terre rouge, arbres épars, ciel immense. Le véhicule ROX s'éloignant de la caméra, se réduisant vers l'horizon. Aucun bâtiment, aucune infrastructure — seulement la route et le nord. Le convoi franchit la frontière guinéenne et l'image s'arrête. Le travail d'Atoure en Côte d'Ivoire est accompli."
   }
 ];
 
@@ -847,26 +880,21 @@ const MEDIA = [
   ],
   /* Day 2 — Abidjan (arrival) */
   [
-    { src: RAW + 'Abidjan/caption.jpg',                                                                   type: 'image' },
-    { src: RAW + 'Abidjan/caption%20(1).jpg',                                                             type: 'image' },
-    { src: RAW + 'Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',                    type: 'image' },
+    { src: RAW + 'Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                             type: 'image' },
     { src: RAW + 'Abidjan/sofitel-abidjan-hotel.jpg',                                                     type: 'image' },
     { src: RAW + 'Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',                    type: 'image' },
-    { src: RAW + 'Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                             type: 'image' }
+    { src: RAW + 'Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',                    type: 'image' }
   ],
-  /* Day 3 — Abidjan (city day — same location) */
+  /* Day 3 — Abidjan (city day) */
   [
-    { src: RAW + 'Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',                    type: 'image' },
-    { src: RAW + 'Abidjan/caption.jpg',                                                                   type: 'image' },
-    { src: RAW + 'Abidjan/caption%20(1).jpg',                                                             type: 'image' },
-    { src: RAW + 'Abidjan/sofitel-abidjan-hotel.jpg',                                                     type: 'image' },
     { src: RAW + 'Abidjan/ice-85676970-71817411_3XL-686843-scaled-e1688301438980.jpg',                    type: 'image' },
-    { src: RAW + 'Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                             type: 'image' }
+    { src: RAW + 'Abidjan/sofitel-abidjan-hotel-ivoire-general-1256063d.jpg',                             type: 'image' },
+    { src: RAW + 'Abidjan/sofitel-abidjan-hotel.jpg',                                                     type: 'image' },
+    { src: RAW + 'Abidjan/AFRIQUEMAGAZINE_466_20250708%20(3).pdf-image-010%20(1).jpg',                    type: 'image' }
   ],
   /* Day 4 — Yamoussoukro */
   [
     { src: RAW + 'Yakro/basilique-Notre-Dame-de-la-Paix-de-Yamoussoukro-2.jpg',                           type: 'image' },
-    { src: RAW + 'Abidjan/r787i21nw2hb00sbfkf0qx4ewdz0.webp',                                            type: 'image' },
     { src: RAW + 'Abidjan/Hotel-President-Yamoussoukro-scaled.jpeg',                                      type: 'image' }
   ],
   /* Day 5 — Korhogo */
@@ -993,9 +1021,10 @@ buildCards();
 /* ── RENDER DETAIL PANEL ────────────────────────────────────────────────── */
 const UI = {
   en: { convoy:'Convoy', hotel:'Hotel', activation:'Activation', watch:'Watch Points', note:'Priority Note',
-        confirmed:'Confirmed', tbc:'TBC', delegation:'Delegation Option' },
+        confirmed:'Confirmed', tbc:'TBC', delegation:'Delegation Option', vision:'Atoure Vision' },
   fr: { convoy:'Convoi', hotel:'Hôtel', activation:'Activation', watch:'Points de Vigilance',
-        note:'Note Prioritaire', confirmed:'Confirmé', tbc:'À CONFIRMER', delegation:'Option Délégation' }
+        note:'Note Prioritaire', confirmed:'Confirmé', tbc:'À CONFIRMER', delegation:'Option Délégation',
+        vision:'Vision Atoure' }
 };
 
 function hotelBadge(status) {
@@ -1038,6 +1067,10 @@ function renderDetail() {
         <div class="d-value"><ul class="watch-list">${watchItems}</ul></div>
       </div>
     </div>
+    ${d.vision ? `<div class="vision-block">
+      <div class="vision-lbl">${u.vision}</div>
+      <div class="vision-txt">${d.vision}</div>
+    </div>` : ''}
     <div class="note-block">
       <div class="note-lbl">${u.note}</div>
       <div class="note-txt">${d.note}</div>
