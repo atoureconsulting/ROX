@@ -331,56 +331,87 @@
     }
     .note-txt { font-size: 0.77rem; color: var(--light); line-height: 1.55; font-style: italic; }
 
-    /* ── MEDIA GALLERY ───────────────────────────────────────────────── */
-    .media-section {
-      margin-top: 10px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(200,169,81,0.1);
+    /* ── LOGO ────────────────────────────────────────────────────────── */
+    .atoure-logo {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.92;
+      display: block;
+      margin-bottom: 6px;
     }
 
+    /* ── MEDIA HERO GALLERY ──────────────────────────────────────────── */
     .media-section-lbl {
       font-size: 0.57rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--gold);
       font-family: system-ui, sans-serif;
-      margin-bottom: 8px;
+      margin-bottom: 9px;
     }
 
-    .media-strip {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding-bottom: 3px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--mid) transparent;
-    }
-    .media-strip::-webkit-scrollbar { height: 3px; }
-    .media-strip::-webkit-scrollbar-thumb { background: var(--mid); border-radius: 2px; }
+    .media-hero { margin-bottom: 24px; }
 
-    .media-thumb {
-      flex: 0 0 auto;
-      width: 134px;
-      height: 84px;
-      border-radius: 3px;
+    .media-hero-main {
+      width: 100%;
+      height: 300px;
+      border-radius: 4px;
       overflow: hidden;
-      cursor: pointer;
-      border: 1px solid rgba(200,169,81,0.15);
-      transition: border-color 0.18s, transform 0.18s;
+      cursor: zoom-in;
       position: relative;
       background: var(--surface);
+      margin-bottom: 7px;
     }
-    .media-thumb:hover {
-      border-color: var(--gold);
-      transform: translateY(-1px);
-    }
-    .media-thumb img,
-    .media-thumb video {
+    .media-hero-main img,
+    .media-hero-main video {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: opacity 0.22s;
     }
+    .media-hero-main::after {
+      content: '⤢';
+      position: absolute;
+      bottom: 9px; right: 9px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      background: rgba(0,0,0,0.42);
+      padding: 2px 6px;
+      border-radius: 3px;
+      pointer-events: none;
+      line-height: 1.4;
+    }
+
+    .hero-thumbs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--mid) transparent;
+    }
+    .hero-thumbs::-webkit-scrollbar { height: 3px; }
+    .hero-thumbs::-webkit-scrollbar-thumb { background: var(--mid); border-radius: 2px; }
+
+    .hero-thumb {
+      flex: 0 0 auto;
+      width: 72px;
+      height: 48px;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      opacity: 0.55;
+      transition: border-color 0.18s, opacity 0.18s;
+      background: var(--surface);
+    }
+    .hero-thumb.active, .hero-thumb:hover { border-color: var(--gold); opacity: 1; }
+    .hero-thumb img, .hero-thumb video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
     .play-badge {
       position: absolute;
       inset: 0;
@@ -391,6 +422,10 @@
       font-size: 22px;
       color: rgba(255,255,255,0.9);
       pointer-events: none;
+    }
+
+    @media (max-width: 620px) {
+      .media-hero-main { height: 200px; }
     }
 
     /* ── LIGHTBOX ─────────────────────────────────────────────────────── */
@@ -487,16 +522,18 @@
 <!-- ── HEADER ──────────────────────────────────────────────────────────── -->
 <header class="header">
   <div class="header-brand">
-    <h1>ROX Motor — Ivory Coast</h1>
+    <img src="https://raw.githubusercontent.com/atoureconsulting/ROX/claude/rox-motor-route-map-PobVw/Media/logos/1.png"
+         class="atoure-logo" alt="Atoure Management & Consulting" />
+    <h1 id="hdr-title">ROX Motor — Ivory Coast</h1>
     <div class="header-meta">
-      <span>6-Day Campaign Route</span>
+      <span id="hdr-sub1">6-Day Campaign Route</span>
       <span>2 ROX + 4 Support 4×4s</span>
       <span>~25 Crew</span>
     </div>
   </div>
   <div class="toggle-group">
-    <button class="itin-btn active" id="btn-a" onclick="setItinerary('A')">Itinerary A — Full Convoy</button>
-    <button class="itin-btn"        id="btn-b" onclick="setItinerary('B')">Itinerary B — Convoy + Flight</button>
+    <button class="itin-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="itin-btn"        id="btn-fr" onclick="setLang('fr')">FR</button>
   </div>
 </header>
 
@@ -693,6 +730,105 @@ const DAYS = [
   }
 ];
 
+/* ── FRENCH TRANSLATIONS ────────────────────────────────────────────────── */
+const DAYS_FR = [
+  {
+    label: 'Jour 1', route: 'Noé → Assinie', distance: '~430 km · 5h + formalités',
+    borderColor: '#1A5C52', focusStop: 1, zoom: 10,
+    hotel: "L'Escapade Hôtel — Assinie Km 12", hotelStatus: 'confirmed',
+    convoy:     'Passage à Noé, route vers l\'ouest sur le couloir côtier. Départ matinal indispensable — quitter à 07h00. Longue journée de route.',
+    spA:        'Convoi complet réuni. Chef de sécurité SAFCOM en tête du convoi.',
+    spB:        'Option : la délégation peut voler en avance — À CONFIRMER avec Fabrice.',
+    activation: 'Révélation du véhicule au coucher du soleil à la lagune d\'Assinie. Concept de la jetée de L\'Escapade — véhicules ROX sur la jetée, drone en ascension depuis le niveau de l\'eau pour révéler la péninsule atlantique. Candidat pour l\'image d\'ouverture de la campagne. Autorisation de tournage confirmée. Confirmer la capacité portante de la jetée avant le jour de tournage.',
+    watchPoints: [
+      'Passage frontalier imprévisible — prévoir 1–2h de marge, départ matinal',
+      'Journée de conduite la plus longue de la campagne',
+      'Scission des vols délégation À CONFIRMER avec Fabrice',
+      'Carnets de véhicules, passeports équipe, documents équipement à pré-autoriser'
+    ],
+    note: "Le plan de la jetée est l'image d'ouverture candidate. Confirmer la capacité portante de la jetée de L'Escapade avant le jour du tournage. Détailing mobile requis à l'arrivée."
+  },
+  {
+    label: 'Jour 2', route: 'Assinie → Abidjan', distance: '~100 km · 1h30',
+    borderColor: '#1A5C52', focusStop: 2, zoom: 10,
+    hotel: 'Hôtel Ivoire / Noom Hôtel (À CONFIRMER — 2 nuits)', hotelStatus: 'tbc',
+    convoy:     'Trajet côtier court. Forte opportunité de tournage en route — décor atlantique, véhicules en mouvement. Arriver à Abidjan en début d\'après-midi.',
+    spA:        'Convoi complet — tronçon court, aucune scission nécessaire.',
+    spB:        'Convoi complet — tronçon court, aucune scission nécessaire.',
+    activation: 'Séquences de tournage sur route côtière en route. À l\'arrivée : confirmer le lieu de l\'événement Jour 3 et tous les prestataires — action la plus urgente. Stationnement couvert sécurisé pour les véhicules ROX.',
+    watchPoints: [
+      'Hôtel non encore confirmé — réserver immédiatement à la signature',
+      'Le lieu de l\'événement Jour 3 est la réservation la plus urgente à l\'arrivée à Abidjan',
+      'Stationnement couvert sécurisé pour les véhicules ROX — pas en voirie'
+    ],
+    note: 'Détailing complet des deux véhicules ROX à l\'arrivée. Les deux véhicules à 100% avant le départ du Jour 4.'
+  },
+  {
+    label: 'Jour 3', route: 'Abidjan — Activations', distance: 'Déplacements urbains uniquement',
+    borderColor: '#1A2A5C', focusStop: 2, zoom: 11,
+    hotel: 'Même hôtel — Nuit 2 sur 2', hotelStatus: 'confirmed',
+    convoy:     'Basé à Abidjan. Hôtel ↔ lieux de tournage ↔ lieu de l\'événement. Tournage urbain : skyline du Plateau, ponts sur la lagune au crépuscule, autoroutes surélevées.',
+    spA:        'Toute l\'équipe à Abidjan. Repos et préparation de l\'événement.',
+    spB:        'Toute l\'équipe à Abidjan. Repos et préparation de l\'événement.',
+    activation: 'Événement médias et influenceurs en soirée — quartier Plateau ou Cocody. Lieu non encore sourcé. Liste influenceurs, liste médias et liste entreprises/invités prêtes — activées à réception du brief ROX. Prestataires son, lumière et personnel événementiel non encore identifiés.',
+    watchPoints: [
+      'Lieu de l\'événement non encore sourcé — réservation la plus urgente',
+      'Brief d\'activation ROX non encore reçu — tous les concepts restent À CONFIRMER',
+      'Journée à plus haute visibilité — toute la logistique doit être irréprochable',
+      'Confirmer si ROX / AB Studios fournissent leur propre équipe médias'
+    ],
+    note: 'Les deux véhicules entièrement détaillés avant l\'événement. Les deux véhicules chargés avant le départ matinal du Jour 4.'
+  },
+  {
+    label: 'Jour 4', route: 'Abidjan → Yamoussoukro', distance: '~240 km · 2h30',
+    borderColor: '#1A2A5C', focusStop: 3, zoom: 9,
+    hotel: 'Hôtel Président', hotelStatus: 'confirmed',
+    convoy:     'Route vers le nord via l\'autoroute A3. Arriver à Yamoussoukro pour le tournage à la Basilique. Les véhicules ROX doivent être impeccables — détailing complet avant le départ d\'Abidjan.',
+    spA:        'Convoi complet réuni.',
+    spB:        'Option délégation : vol ABJ → ASK (aéroport de Yamoussoukro) — À CONFIRMER avec Fabrice. L\'équipe d\'avance coordonne l\'accès à la Basilique.',
+    activation: 'Plan emblématique de la campagne — deux véhicules ROX sur la voie d\'approche à 8 voies, dôme de la Basilique remplissant l\'horizon. Drone et séquences au sol. Coordonner avec la Fondation Félix Houphouët-Boigny pour l\'accès.',
+    watchPoints: [
+      'Accès Fondation non garanti — initier le contact immédiatement à la signature',
+      'La voie d\'approche de la Basilique est le plan emblématique — tâche de pré-production prioritaire',
+      'Hôtel Président : réservation anticipée indispensable — options limitées à Yamoussoukro',
+      'Vol délégation ABJ→ASK À CONFIRMER avec Fabrice'
+    ],
+    note: 'Contacter la Fondation Félix Houphouët-Boigny est la tâche de pré-production la plus prioritaire. Aucune confirmation = aucun plan emblématique.'
+  },
+  {
+    label: 'Jour 5', route: 'Yamoussoukro → Korhogo', distance: '~340 km · 4h',
+    borderColor: '#1A2A5C', focusStop: 4, zoom: 9,
+    hotel: 'Hôtel des Savanes / Hôtel Mont Korhogo (À CONFIRMER)', hotelStatus: 'tbc',
+    convoy:     'Route vers le nord via la RN3. Fort contenu visuel en route — transition savane, grand ciel, conduite en formation. La RN3 est goudronnée — vérifier l\'état actuel à l\'approche de la date.',
+    spA:        'Convoi complet réuni.',
+    spB:        'Option délégation : vol ABJ → HGO (aéroport de Korhogo) — À CONFIRMER avec Fabrice. L\'équipe d\'avance met en place l\'activation.',
+    activation: 'Activation culturelle Sénoufo — identité visuelle distincte du sud. Tournage en savane et paysage ouvert. Élément culturel local à confirmer.',
+    watchPoints: [
+      'Dernière charge VE confirmée avant la frontière guinéenne — charge complète indispensable',
+      'Longue journée de conduite — départ de Yamoussoukro à l\'heure',
+      'Vérifier l\'état actuel de la borne directement auprès d\'EV.Tech',
+      'Vol délégation ABJ→HGO À CONFIRMER avec Fabrice'
+    ],
+    note: 'La RN3 est goudronnée — vérifier l\'état de la route à l\'approche de la date. Confirmer l\'hôtel tôt : options limitées à Korhogo.'
+  },
+  {
+    label: 'Jour 6', route: 'Korhogo → Odienné → Frontière Guinée', distance: '~250 km · 3h + formalités',
+    borderColor: '#C4604A', focusStop: 5, zoom: 9,
+    hotel: 'Hôtel Les Frontières (si nuit nécessaire)', hotelStatus: 'tbc',
+    convoy:     'Convoi complet vers le nord-ouest à travers Odienné jusqu\'à la frontière guinéenne (couloir Noumoudjigila). Sections en latérite probables à l\'approche — confirmer la praticabilité. Dernier arrêt carburant à Odienné. Prévoir 2–3h pour les formalités frontalières.',
+    spA:        'Toutes les parties réunies — convoi complet pour le dernier jour.',
+    spB:        'Toutes les parties réunies — convoi complet pour le dernier jour.',
+    activation: 'Dernières séquences en Côte d\'Ivoire. Véhicules disparaissant vers l\'horizon sur une route en terre rouge déserte. Routes en latérite, savane, nord clairsemé — visuels de clôture du chapitre.',
+    watchPoints: [
+      'Point le plus reculé de l\'itinéraire — protocoles médicaux d\'urgence indispensables',
+      'Passage frontalier imprévisible — prévoir toute la marge nécessaire',
+      'Aucune charge après Korhogo — partir avec charge complète',
+      'Documents d\'entrée en Guinée à confirmer des semaines à l\'avance'
+    ],
+    note: 'Le périmètre Atoure se termine à la frontière. Passation complète au partenaire guinéen : rapport d\'état du convoi, manifeste d\'équipement, manifeste d\'équipe, notes médicales.'
+  }
+];
+
 /* ── MEDIA ──────────────────────────────────────────────────────────────── */
 // Absolute raw GitHub URLs — file works anywhere without needing local Media folder
 
@@ -743,8 +879,8 @@ const MEDIA = [
 ];
 
 /* ── STATE ──────────────────────────────────────────────────────────────── */
-let itinerary = 'A';
-let activeDay  = 0;
+let lang      = 'en';
+let activeDay = 0;
 
 /* ── MAP INIT ───────────────────────────────────────────────────────────── */
 const map = L.map('map', { center: [7.0, -5.5], zoom: 7 });
@@ -828,101 +964,82 @@ const ROAD_ROUTE = [
 ];
 L.polyline(ROAD_ROUTE, { color: '#C8A951', weight: 2.5, opacity: 0.78 }).addTo(map);
 
-/* ── FLIGHT ARC — Itinerary B (ABJ → HGO) ──────────────────────────────── */
-const abidjanLl = STOPS[2].ll;   // [5.35, -4.01]
-const korhogLl  = STOPS[4].ll;   // [9.45, -5.63]
-const planeMid  = [
-  (abidjanLl[0] + korhogLl[0]) / 2,
-  (abidjanLl[1] + korhogLl[1]) / 2
-];
-
-const flightLine = L.polyline([abidjanLl, korhogLl], {
-  color: '#4a8fd4', weight: 2, opacity: 0.88, dashArray: '9 6'
-});
-
-const planeMarker = L.marker(planeMid, {
-  icon: L.divIcon({
-    className: '',
-    html: '<span class="plane-glyph">&#9992;</span>',
-    iconSize:      [26, 26],
-    iconAnchor:    [13, 13],
-    tooltipAnchor: [0, -16]
-  }),
-  zIndexOffset: 1000
-});
-
-planeMarker.bindTooltip("Air Côte d'Ivoire · ABJ → HGO · ~1h20 · TBC with Fabrice", {
-  direction: 'top',
-  className: 'rox-tip'
-});
 
 /* ── BUILD CARDS ────────────────────────────────────────────────────────── */
 const track = document.getElementById('cards-track');
 
-DAYS.forEach((d, i) => {
-  const card = document.createElement('div');
-  card.className = 'day-card' + (i === 0 ? ' active' : '');
-  card.style.color = d.borderColor;
-  card.setAttribute('tabindex', '0');
-  card.innerHTML = `
-    <div class="card-lbl">${d.label}</div>
-    <div class="card-title">${d.route}</div>
-    <div class="card-dist">${d.distance}</div>
-  `;
-  card.addEventListener('click', () => selectDay(i));
-  card.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDay(i); }
+function buildCards() {
+  const src = lang === 'fr' ? DAYS_FR : DAYS;
+  track.innerHTML = '';
+  src.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'day-card' + (i === activeDay ? ' active' : '');
+    card.style.color = d.borderColor;
+    card.setAttribute('tabindex', '0');
+    card.innerHTML = `
+      <div class="card-lbl">${d.label}</div>
+      <div class="card-title">${d.route}</div>
+      <div class="card-dist">${d.distance}</div>
+    `;
+    card.addEventListener('click', () => selectDay(i));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDay(i); }
+    });
+    track.appendChild(card);
   });
-  track.appendChild(card);
-});
+}
+buildCards();
 
 /* ── RENDER DETAIL PANEL ────────────────────────────────────────────────── */
+const UI = {
+  en: { convoy:'Convoy', hotel:'Hotel', activation:'Activation', watch:'Watch Points', note:'Priority Note',
+        confirmed:'Confirmed', tbc:'TBC', delegation:'Delegation Option' },
+  fr: { convoy:'Convoi', hotel:'Hôtel', activation:'Activation', watch:'Points de Vigilance',
+        note:'Note Prioritaire', confirmed:'Confirmé', tbc:'À CONFIRMER', delegation:'Option Délégation' }
+};
+
 function hotelBadge(status) {
-  if (status === 'confirmed') return '<span class="confirmed-badge">Confirmed</span>';
-  if (status === 'tbc')       return '<span class="tbc-badge">TBC</span>';
+  const u = UI[lang];
+  if (status === 'confirmed') return `<span class="confirmed-badge">${u.confirmed}</span>`;
+  if (status === 'tbc')       return `<span class="tbc-badge">${u.tbc}</span>`;
   return '';
 }
 
 function renderDetail() {
-  const d  = DAYS[activeDay];
-  const sp = itinerary === 'A' ? d.spA : d.spB;
-
-  const watchItems = d.watchPoints
-    .map(w => `<li>${w}</li>`)
-    .join('');
+  const d = (lang === 'fr' ? DAYS_FR : DAYS)[activeDay];
+  const u = UI[lang];
+  const watchItems = d.watchPoints.map(w => `<li>${w}</li>`).join('');
 
   document.getElementById('detail-panel').innerHTML = `
     <div class="detail-head">
       <h2>${d.label} — ${d.route}</h2>
       <div class="detail-meta">${d.distance}</div>
     </div>
+    ${buildMediaHero(activeDay)}
     <div class="detail-grid">
       <div class="d-cell">
-        <div class="d-label">Convoy</div>
+        <div class="d-label">${u.convoy}</div>
         <div class="d-value">${d.convoy}</div>
       </div>
       <div class="d-cell">
-        <div class="d-label">Second Party — Itinerary ${itinerary}</div>
-        <div class="d-value">${sp}</div>
+        <div class="d-label">${u.delegation}</div>
+        <div class="d-value">${d.spB}</div>
       </div>
       <div class="d-cell">
-        <div class="d-label">Hotel ${hotelBadge(d.hotelStatus)}</div>
+        <div class="d-label">${u.hotel} ${hotelBadge(d.hotelStatus)}</div>
         <div class="d-value">${d.hotel}</div>
       </div>
       <div class="d-cell">
-        <div class="d-label">Activation</div>
+        <div class="d-label">${u.activation}</div>
         <div class="d-value">${d.activation}</div>
       </div>
       <div class="d-cell span2">
-        <div class="d-label">Watch Points</div>
-        <div class="d-value">
-          <ul class="watch-list">${watchItems}</ul>
-        </div>
+        <div class="d-label">${u.watch}</div>
+        <div class="d-value"><ul class="watch-list">${watchItems}</ul></div>
       </div>
     </div>
-    ${buildMediaStrip(activeDay)}
     <div class="note-block">
-      <div class="note-lbl">Priority Note</div>
+      <div class="note-lbl">${u.note}</div>
       <div class="note-txt">${d.note}</div>
     </div>
   `;
@@ -947,45 +1064,54 @@ function selectDay(i) {
   renderDetail();
 }
 
-/* ── TOGGLE ITINERARY ───────────────────────────────────────────────────── */
-function setItinerary(mode) {
-  itinerary = mode;
-  document.getElementById('btn-a').classList.toggle('active', mode === 'A');
-  document.getElementById('btn-b').classList.toggle('active', mode === 'B');
-
-  if (mode === 'B') {
-    flightLine.addTo(map);
-    planeMarker.addTo(map);
-  } else {
-    if (map.hasLayer(flightLine))  map.removeLayer(flightLine);
-    if (map.hasLayer(planeMarker)) map.removeLayer(planeMarker);
-  }
-
+/* ── LANGUAGE TOGGLE ────────────────────────────────────────────────────── */
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('btn-fr').classList.toggle('active', l === 'fr');
+  document.getElementById('hdr-title').textContent = l === 'fr' ? 'ROX Motor — Côte d\'Ivoire' : 'ROX Motor — Ivory Coast';
+  document.getElementById('hdr-sub1').textContent  = l === 'fr' ? 'Itinéraire 6 Jours' : '6-Day Campaign Route';
+  buildCards();
   renderDetail();
 }
 
-/* ── MEDIA GALLERY ──────────────────────────────────────────────────────── */
+/* ── MEDIA HERO GALLERY ─────────────────────────────────────────────────── */
 
-function buildMediaStrip(dayIdx) {
+function buildMediaHero(dayIdx) {
   const items = MEDIA[dayIdx];
   if (!items || items.length === 0) return '';
 
-  const thumbs = items.map((item, i) => {
-    if (item.type === 'video') {
-      return `<div class="media-thumb" onclick="openLb(${dayIdx},${i})" title="Play video">
-        <video src="${item.src}" muted preload="metadata"></video>
-        <div class="play-badge">&#9654;</div>
-      </div>`;
-    }
-    return `<div class="media-thumb" onclick="openLb(${dayIdx},${i})">
-      <img src="${item.src}" loading="lazy" alt="" />
-    </div>`;
-  }).join('');
+  const first = items[0];
+  const heroInner = first.type === 'video'
+    ? `<video src="${first.src}" muted preload="metadata"></video><div class="play-badge">&#9654;</div>`
+    : `<img src="${first.src}" alt="" />`;
 
-  return `<div class="media-section">
-    <div class="media-section-lbl">Visual Reference — ${DAYS[dayIdx].label}</div>
-    <div class="media-strip">${thumbs}</div>
+  const thumbsHtml = items.length > 1 ? items.map((item, i) => {
+    const inner = item.type === 'video'
+      ? `<video src="${item.src}" muted preload="metadata"></video>`
+      : `<img src="${item.src}" loading="lazy" alt="" />`;
+    return `<div class="hero-thumb${i===0?' active':''}" onclick="setHeroImg(${dayIdx},${i})">${inner}</div>`;
+  }).join('') : '';
+
+  const lbl = lang === 'fr' ? 'Référence Visuelle' : 'Visual Reference';
+  const dayLbl = (lang === 'fr' ? DAYS_FR : DAYS)[dayIdx].label;
+
+  return `<div class="media-hero">
+    <div class="media-section-lbl">${lbl} — ${dayLbl}</div>
+    <div class="media-hero-main" id="hero-main" onclick="openLb(${dayIdx},0)">${heroInner}</div>
+    ${items.length > 1 ? `<div class="hero-thumbs">${thumbsHtml}</div>` : ''}
   </div>`;
+}
+
+function setHeroImg(dayIdx, itemIdx) {
+  const item   = MEDIA[dayIdx][itemIdx];
+  const mainEl = document.getElementById('hero-main');
+  if (!mainEl) return;
+  mainEl.innerHTML = item.type === 'video'
+    ? `<video src="${item.src}" muted preload="metadata"></video><div class="play-badge">&#9654;</div>`
+    : `<img src="${item.src}" alt="" />`;
+  mainEl.onclick = () => openLb(dayIdx, itemIdx);
+  document.querySelectorAll('.hero-thumb').forEach((t, i) => t.classList.toggle('active', i === itemIdx));
 }
 
 /* ── LIGHTBOX ────────────────────────────────────────────────────────────── */
