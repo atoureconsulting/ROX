@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ROX Motor — Ivory Coast Route Map</title>
+
+  <!-- OG / sharing -->
+  <meta property="og:title"       content="ROX Motor — Ivory Coast | 6-Day Campaign Route" />
+  <meta property="og:description" content="Interactive operational itinerary: Noé → Assinie → Abidjan → Yamoussoukro → Korhogo → Guinea. Atoure Management & Consulting." />
+  <meta property="og:type"        content="website" />
+  <meta property="og:image"       content="https://raw.githubusercontent.com/atoureconsulting/ROX/claude/rox-motor-route-map-PobVw/Media/Yakro/basilique-Notre-Dame-de-la-Paix-de-Yamoussoukro-2.jpg" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <!-- Inline SVG favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230D0C0A'/><circle cx='16' cy='16' r='10' fill='none' stroke='%23C8A951' stroke-width='2.5'/><circle cx='16' cy='16' r='4' fill='%23C8A951'/></svg>" />
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <style>
@@ -134,18 +145,6 @@
       transform: scale(1.35);
     }
 
-    /* ── PLANE MARKER ─────────────────────────────────────────────────── */
-    .plane-glyph {
-      display: block;
-      font-size: 20px;
-      line-height: 1;
-      color: #5a9fd4;
-      cursor: pointer;
-      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.55));
-      text-align: center;
-      transform: rotate(-45deg);
-    }
-
     /* ── POPUPS ──────────────────────────────────────────────────────── */
     .leaflet-popup-content-wrapper {
       background: var(--surface) !important;
@@ -176,19 +175,31 @@
     }
     .popup-desc { font-size: 0.72rem; color: var(--light); line-height: 1.55; font-family: system-ui, sans-serif; }
 
-    /* ── TOOLTIP ─────────────────────────────────────────────────────── */
-    .leaflet-tooltip.rox-tip {
-      background: var(--surface);
-      border: 1px solid rgba(200,169,81,0.38);
-      color: var(--cream);
-      font-family: system-ui, sans-serif;
-      font-size: 0.72rem;
-      padding: 5px 11px;
-      border-radius: 3px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.55);
-      white-space: nowrap;
+    /* ── MAP TOGGLE ──────────────────────────────────────────────────── */
+    .map-toggle-bar {
+      background: var(--dark);
+      border-bottom: 1px solid rgba(200,169,81,0.1);
+      padding: 6px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
     }
-    .leaflet-tooltip.rox-tip.leaflet-tooltip-top::before { border-top-color: rgba(200,169,81,0.38); }
+    .map-toggle-btn {
+      background: none;
+      border: 1px solid rgba(200,169,81,0.25);
+      color: var(--light);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: system-ui, sans-serif;
+      padding: 4px 11px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s;
+    }
+    .map-toggle-btn:hover { color: var(--gold); border-color: rgba(200,169,81,0.5); }
+    #map { transition: height 0.3s ease; }
+    #map.map-hidden { height: 0 !important; overflow: hidden; }
 
     /* ── CARDS ───────────────────────────────────────────────────────── */
     .cards-section {
@@ -232,11 +243,19 @@
 
     /* ── DETAIL PANEL ────────────────────────────────────────────────── */
     .detail-panel { background: var(--dark); padding: 20px 26px 32px; }
+    .detail-inner { max-width: 1100px; margin: 0 auto; }
+
+    /* fade-in on day switch */
+    .detail-inner { animation: fadeIn 0.18s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
     .detail-head {
       padding-bottom: 14px;
       margin-bottom: 14px;
       border-bottom: 1px solid rgba(200,169,81,0.13);
+    }
+    .detail-head-row {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
     }
     .detail-head h2 {
       font-size: clamp(0.95rem, 2vw, 1.1rem);
@@ -249,6 +268,33 @@
       font-size: 0.68rem; color: var(--light); font-family: system-ui, sans-serif;
       letter-spacing: 0.09em; text-transform: uppercase; margin-top: 4px;
     }
+    .day-progress {
+      font-size: 0.62rem; color: var(--mid); font-family: system-ui, sans-serif;
+      letter-spacing: 0.1em; white-space: nowrap; padding-top: 3px; flex-shrink: 0;
+    }
+
+    /* ── PREV / NEXT NAV ─────────────────────────────────────────────── */
+    .day-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 28px; padding-top: 18px;
+      border-top: 1px solid rgba(200,169,81,0.1);
+    }
+    .day-nav-btn {
+      background: none;
+      border: 1px solid rgba(200,169,81,0.25);
+      color: var(--light);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      font-family: system-ui, sans-serif;
+      padding: 7px 16px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s, background 0.18s;
+    }
+    .day-nav-btn:hover { color: var(--gold); border-color: rgba(200,169,81,0.5); background: rgba(200,169,81,0.04); }
+    .day-nav-btn:disabled { opacity: 0.22; cursor: default; }
+    .day-nav-btn:disabled:hover { color: var(--light); border-color: rgba(200,169,81,0.25); background: none; }
+    .day-nav-center { font-size: 0.62rem; color: var(--mid); font-family: system-ui, sans-serif; letter-spacing: 0.1em; }
 
     .detail-grid {
       display: grid;
@@ -527,14 +573,16 @@
     }
 
     /* ── RESPONSIVE ──────────────────────────────────────────────────── */
-    @media (max-width: 620px) {
-      .header { flex-direction: column; align-items: flex-start; }
-      #map { height: 320px; }
+    @media (max-width: 740px) {
       .detail-grid { grid-template-columns: 1fr; }
       .d-cell.span2 { grid-column: 1; }
-      .cards-section, .detail-panel, .header { padding-left: 14px; padding-right: 14px; }
-      .media-thumb { width: 110px; height: 70px; }
+    }
+    @media (max-width: 620px) {
+      .header { flex-direction: column; align-items: flex-start; }
+      #map { height: 280px; }
+      .cards-section, .detail-panel, .header, .map-toggle-bar { padding-left: 14px; padding-right: 14px; }
       .lb-arrow { display: none; }
+      .day-nav-btn { padding: 6px 11px; font-size: 0.63rem; }
     }
   </style>
 </head>
@@ -560,6 +608,9 @@
 
 <!-- ── MAP ─────────────────────────────────────────────────────────────── -->
 <div id="map"></div>
+<div class="map-toggle-bar">
+  <button class="map-toggle-btn" id="map-toggle-btn" onclick="toggleMap()">Hide Map</button>
+</div>
 
 <!-- ── CARDS ───────────────────────────────────────────────────────────── -->
 <div class="cards-section">
@@ -568,6 +619,7 @@
 
 <!-- ── DETAIL ──────────────────────────────────────────────────────────── -->
 <div class="detail-panel" id="detail-panel"></div>
+
 
 <!-- ── LIGHTBOX ────────────────────────────────────────────────────────── -->
 <div id="lightbox" class="lightbox">
@@ -587,39 +639,46 @@
 
 const STOPS = [
   {
-    ll: [5.11, -2.97], label: 'Noé border', sub: 'Entry',
+    ll: [5.11, -2.97], label: 'Noé border', labelFr: 'Frontière de Noé', sub: 'Entry', subFr: 'Entrée',
     hotel: null,
-    desc: 'Ghana–Ivory Coast border crossing. Gateway to the 6-day campaign route. Allow 1–2h for formalities.'
+    desc:   'Ghana–Ivory Coast border crossing. Gateway to the 6-day campaign route. Allow 1–2h for formalities.',
+    descFr: 'Passage frontalier Ghana–Côte d\'Ivoire. Porte d\'entrée du parcours 6 jours. Prévoir 1–2h pour les formalités.'
   },
   {
-    ll: [5.15, -3.18], label: 'Assinie', sub: 'Day 1',
+    ll: [5.15, -3.18], label: 'Assinie', labelFr: 'Assinie', sub: 'Day 1', subFr: 'Jour 1',
     hotel: "L'Escapade Hotel — Assinie Km 12",
-    desc: 'Lagoon resort destination. Sunset vehicle reveal. Pier shot — drone ascending from water level to reveal the Atlantic peninsula.'
+    desc:   'Lagoon resort destination. Sunset vehicle reveal. Pier shot — drone ascending from water level to reveal the Atlantic peninsula.',
+    descFr: 'Destination balnéaire lagunaire. Révélation du véhicule au coucher du soleil. Plan de la jetée — drone en ascension depuis le niveau de l\'eau révélant la péninsule atlantique.'
   },
   {
-    ll: [5.35, -4.01], label: 'Abidjan', sub: 'Days 2–3',
+    ll: [5.35, -4.01], label: 'Abidjan', labelFr: 'Abidjan', sub: 'Days 2–3', subFr: 'Jours 2–3',
     hotel: 'Hotel Ivoire / Noom Hotel (TBC)',
-    desc: "Economic capital. Coastal road filming on arrival. Day 3: West Africa media and influencer debut. Plateau skyline, lagoon bridges, elevated motorways."
+    desc:   'Economic capital. Coastal road filming on arrival. Day 3: West Africa media and influencer debut. Plateau skyline, lagoon bridges, elevated motorways.',
+    descFr: 'Capitale économique. Tournage sur route côtière à l\'arrivée. Jour 3 : premier événement médias et influenceurs ROX en Afrique de l\'Ouest. Pont Alassane Ouattara.'
   },
   {
-    ll: [6.82, -5.27], label: 'Yamoussoukro', sub: 'Day 4',
+    ll: [6.82, -5.27], label: 'Yamoussoukro', labelFr: 'Yamoussoukro', sub: 'Day 4', subFr: 'Jour 4',
     hotel: 'Hôtel Président',
-    desc: 'Political capital. Hero shot of the campaign — two ROX vehicles on the 8-lane Basilica approach road, dome filling the horizon.'
+    desc:   'Political capital. Hero shot of the campaign — two ROX vehicles on the 8-lane Basilica approach road, dome filling the horizon.',
+    descFr: 'Capitale politique. Plan emblématique de la campagne — deux véhicules ROX sur la voie d\'approche à 8 voies, dôme de la Basilique remplissant l\'horizon.'
   },
   {
-    ll: [9.45, -5.63], label: 'Korhogo', sub: 'Day 5',
+    ll: [9.45, -5.63], label: 'Korhogo', labelFr: 'Korhogo', sub: 'Day 5', subFr: 'Jour 5',
     hotel: 'Hôtel des Savanes / Hôtel Mont Korhogo (TBC)',
-    desc: 'Northern cultural hub. Senoufo cultural setting — distinct visual identity from the south. Evening activation. Last confirmed charge point before Guinea.'
+    desc:   'Northern cultural hub. Senoufo cultural setting — distinct visual identity from the south. Mont Korhogo backdrop. Last confirmed charge point before Guinea.',
+    descFr: 'Pôle culturel du nord. Cadre Sénoufo — identité visuelle distincte du sud. Mont Korhogo en arrière-plan. Dernière borne de charge confirmée avant la Guinée.'
   },
   {
-    ll: [9.51, -7.57], label: 'Odienné', sub: 'Day 6',
+    ll: [9.51, -7.57], label: 'Odienné', labelFr: 'Odienné', sub: 'Day 6', subFr: 'Jour 6',
     hotel: 'Hôtel Les Frontières (if overnight needed)',
-    desc: 'Northwestern town. Final Ivory Coast filming — laterite roads, open savanna. Last fuel stop before Guinea border.'
+    desc:   'Northwestern town. Final Ivory Coast filming — laterite roads, open savanna. Last fuel stop before Guinea border.',
+    descFr: 'Ville du nord-ouest. Dernier tournage en Côte d\'Ivoire — routes en latérite, savane ouverte. Dernier arrêt carburant avant la frontière guinéenne.'
   },
   {
-    ll: [9.80, -7.90], label: 'Guinea border', sub: '→ Guinea',
+    ll: [9.80, -7.90], label: 'Guinea border', labelFr: 'Frontière Guinée', sub: '→ Guinea', subFr: '→ Guinée',
     hotel: 'Guinea partner responsible',
-    desc: 'Noumoudjigila corridor. Atoure scope ends here. Full handoff: convoy report, equipment manifest, crew manifest, medical notes.'
+    desc:   'Noumoudjigila corridor. Atoure scope ends here. Full handoff: convoy report, equipment manifest, crew manifest, medical notes.',
+    descFr: 'Couloir de Noumoudjigila. Le périmètre Atoure se termine ici. Passation complète : rapport d\'état du convoi, manifeste d\'équipement, manifeste d\'équipe, notes médicales.'
   }
 ];
 
@@ -870,7 +929,6 @@ const RAW = 'https://raw.githubusercontent.com/atoureconsulting/ROX/claude/rox-m
 const MEDIA = [
   /* Day 1 — Assinie */
   [
-    { src: RAW + 'Assinie/1.jpg',                                                                         type: 'image' },
     { src: RAW + 'Assinie/613699238_17877493065466700_8408318827086361228_n.jpg',                         type: 'image' },
     { src: RAW + 'Assinie/562714533_17866835019466700_558023628690047523_n.jpg',                          type: 'image' },
     { src: RAW + 'Assinie/601521708_17874056925466700_114840238184610981_n.jpg',                          type: 'image' },
@@ -931,23 +989,27 @@ function makeStopIcon(active) {
 }
 
 /* ── STOP MARKERS ───────────────────────────────────────────────────────── */
+function popupHtml(s) {
+  const fr = lang === 'fr';
+  const hotelLine = s.hotel ? `<div class="popup-hotel">${s.hotel}</div>` : '';
+  return `<div class="popup-body">
+    <div class="popup-sub">${fr && s.subFr ? s.subFr : s.sub}</div>
+    <div class="popup-name">${fr && s.labelFr ? s.labelFr : s.label}</div>
+    ${hotelLine}
+    <div class="popup-desc">${fr && s.descFr ? s.descFr : s.desc}</div>
+  </div>`;
+}
+
 const markers = STOPS.map(s => {
-  const hotelLine = s.hotel
-    ? `<div class="popup-hotel">${s.hotel}</div>`
-    : '';
   const m = L.marker(s.ll, { icon: makeStopIcon(false), zIndexOffset: 500 });
-  m.bindPopup(
-    `<div class="popup-body">
-       <div class="popup-sub">${s.sub}</div>
-       <div class="popup-name">${s.label}</div>
-       ${hotelLine}
-       <div class="popup-desc">${s.desc}</div>
-     </div>`,
-    { maxWidth: 260, minWidth: 200 }
-  );
+  m.bindPopup(popupHtml(s), { maxWidth: 260, minWidth: 200 });
   m.addTo(map);
   return m;
 });
+
+function rebuildPopups() {
+  STOPS.forEach((s, i) => markers[i].bindPopup(popupHtml(s), { maxWidth: 260, minWidth: 200 }));
+}
 
 /* ── CONVOY POLYLINE — road coordinates from Google Maps directions ─────── */
 // B102 → A100 → Rte Assinie → A.du Nord/A3 → B309/B308 → A12
@@ -1039,10 +1101,19 @@ function renderDetail() {
   const u = UI[lang];
   const watchItems = d.watchPoints.map(w => `<li>${w}</li>`).join('');
 
-  document.getElementById('detail-panel').innerHTML = `
+  const total = DAYS.length;
+  const prevLabel = activeDay > 0 ? (lang === 'fr' ? DAYS_FR : DAYS)[activeDay - 1].label : '';
+  const nextLabel = activeDay < total - 1 ? (lang === 'fr' ? DAYS_FR : DAYS)[activeDay + 1].label : '';
+
+  document.getElementById('detail-panel').innerHTML = `<div class="detail-inner">
     <div class="detail-head">
-      <h2>${d.label} — ${d.route}</h2>
-      <div class="detail-meta">${d.distance}</div>
+      <div class="detail-head-row">
+        <div>
+          <h2>${d.label} — ${d.route}</h2>
+          <div class="detail-meta">${d.distance}</div>
+        </div>
+        <div class="day-progress">${activeDay + 1} / ${total}</div>
+      </div>
     </div>
     ${buildMediaHero(activeDay)}
     <div class="detail-grid">
@@ -1075,26 +1146,45 @@ function renderDetail() {
       <div class="note-lbl">${u.note}</div>
       <div class="note-txt">${d.note}</div>
     </div>
-  `;
+    <div class="day-nav">
+      <button class="day-nav-btn" onclick="selectDay(${activeDay - 1})" ${activeDay === 0 ? 'disabled' : ''}>
+        ← ${prevLabel}
+      </button>
+      <span class="day-nav-center">${activeDay + 1} / ${total}</span>
+      <button class="day-nav-btn" onclick="selectDay(${activeDay + 1})" ${activeDay === total - 1 ? 'disabled' : ''}>
+        ${nextLabel} →
+      </button>
+    </div>
+  </div>`;
 }
 
 /* ── SELECT DAY ─────────────────────────────────────────────────────────── */
 function selectDay(i) {
   activeDay = i;
 
-  document.querySelectorAll('.day-card').forEach((c, ci) =>
-    c.classList.toggle('active', ci === i)
-  );
+  const cards = document.querySelectorAll('.day-card');
+  cards.forEach((c, ci) => c.classList.toggle('active', ci === i));
+  if (cards[i]) cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
-  markers.forEach((m, mi) =>
-    m.setIcon(makeStopIcon(mi === DAYS[i].focusStop))
-  );
+  markers.forEach((m, mi) => m.setIcon(makeStopIcon(mi === DAYS[i].focusStop)));
 
   const stop = STOPS[DAYS[i].focusStop];
-  map.flyTo(stop.ll, DAYS[i].zoom, { duration: 1.1 });
-  setTimeout(() => markers[DAYS[i].focusStop].openPopup(), 950);
+  if (!document.getElementById('map').classList.contains('map-hidden')) {
+    map.flyTo(stop.ll, DAYS[i].zoom, { duration: 1.1 });
+    setTimeout(() => markers[DAYS[i].focusStop].openPopup(), 950);
+  }
 
   renderDetail();
+  document.getElementById('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── MAP TOGGLE ─────────────────────────────────────────────────────────── */
+function toggleMap() {
+  const mapEl = document.getElementById('map');
+  const btn   = document.getElementById('map-toggle-btn');
+  const hidden = mapEl.classList.toggle('map-hidden');
+  btn.textContent = hidden ? (lang === 'fr' ? 'Afficher la carte' : 'Show Map') : (lang === 'fr' ? 'Masquer la carte' : 'Hide Map');
+  if (!hidden) setTimeout(() => map.invalidateSize(), 310);
 }
 
 /* ── LANGUAGE TOGGLE ────────────────────────────────────────────────────── */
@@ -1104,6 +1194,10 @@ function setLang(l) {
   document.getElementById('btn-fr').classList.toggle('active', l === 'fr');
   document.getElementById('hdr-title').textContent = l === 'fr' ? 'ROX Motor — Côte d\'Ivoire' : 'ROX Motor — Ivory Coast';
   document.getElementById('hdr-sub1').textContent  = l === 'fr' ? 'Itinéraire 6 Jours' : '6-Day Campaign Route';
+  document.getElementById('map-toggle-btn').textContent = document.getElementById('map').classList.contains('map-hidden')
+    ? (l === 'fr' ? 'Afficher la carte' : 'Show Map')
+    : (l === 'fr' ? 'Masquer la carte' : 'Hide Map');
+  rebuildPopups();
   buildCards();
   renderDetail();
 }
@@ -1112,7 +1206,14 @@ function setLang(l) {
 
 function buildMediaHero(dayIdx) {
   const items = MEDIA[dayIdx];
-  if (!items || items.length === 0) return '';
+  const lbl = lang === 'fr' ? 'Référence Visuelle' : 'Visual Reference';
+  const dayLbl = (lang === 'fr' ? DAYS_FR : DAYS)[dayIdx].label;
+  if (!items || items.length === 0) {
+    const msg = lang === 'fr' ? 'Référence visuelle à venir' : 'Visual reference coming soon';
+    return `<div class="media-hero"><div class="media-section-lbl">${lbl} — ${dayLbl}</div>
+      <div style="height:80px;display:flex;align-items:center;justify-content:center;color:var(--mid);font-family:system-ui,sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed rgba(200,169,81,0.15);border-radius:4px;">${msg}</div>
+    </div>`;
+  }
 
   const first = items[0];
   const heroInner = first.type === 'video'
@@ -1125,9 +1226,6 @@ function buildMediaHero(dayIdx) {
       : `<img src="${item.src}" loading="lazy" alt="" />`;
     return `<div class="hero-thumb${i===0?' active':''}" onclick="setHeroImg(${dayIdx},${i})">${inner}</div>`;
   }).join('') : '';
-
-  const lbl = lang === 'fr' ? 'Référence Visuelle' : 'Visual Reference';
-  const dayLbl = (lang === 'fr' ? DAYS_FR : DAYS)[dayIdx].label;
 
   return `<div class="media-hero">
     <div class="media-section-lbl">${lbl} — ${dayLbl}</div>
